@@ -35,18 +35,21 @@
                                   (define-key map (kbd "q")       #'espas-end-game)
                                   (define-key map (kbd "n")       #'espas-start-game)
                                   (define-key map (kbd "p")       #'espas-pause-game)
+                                  (define-key map (kbd "SPC")     #'espas-player-fire)
                                   (define-key map (kbd "a")       #'espas-move-left)
                                   (define-key map (kbd "<left>")  #'espas-move-left)
-                                  (define-key map (kbd "s")       #'espas-move-down)
-                                  (define-key map (kbd "<down>")  #'espas-move-down)
+                                  ;; (define-key map (kbd "s")       #'espas-move-down)
+                                  ;; (define-key map (kbd "<down>")  #'espas-move-down)
                                   (define-key map (kbd "d")       #'espas-move-right)
                                   (define-key map (kbd "<right>") #'espas-move-right)
-                                  (define-key map (kbd "w")       #'espas-move-up)
-                                  (define-key map (kbd "<up>")    #'espas-move-up)
+                                  ;; (define-key map (kbd "w")       #'espas-move-up)
+                                  ;; (define-key map (kbd "<up>")    #'espas-move-up)
 
                                   map)
   "The in-game keymap.")
 (defvar   espas-player-updates  ())
+(defvar   espas-player-bullets  ())
+(defvar   espas-fired           0)
 (defvar   espas-moved           nil)
 (defvar   espas-paused          nil)
 (defvar   espas-player-x        (/ espas-buffer-width  2))
@@ -72,6 +75,19 @@
   (interactive)
 
   (setq espas-paused (not espas-paused)))
+
+(defun espas-update-whether-fired ()
+  "Update the counter of whether the player can fire"
+
+  (setq espas-fired (mod (1+ espas-fired) 9)))
+(defun espas-player-fire ()
+  "Have the player fire."
+  (interactive)
+
+  (when (= espas-fired 0)
+    (push (cons espas-player-x espas-player-y) espas-player-bullets)
+
+    (espas-update-whether-fired)))
 
 (defun espas-move-left ()
   "Move the player left."
@@ -154,17 +170,38 @@ It should be `espas-buffer-name`."
   (unless (or
             espas-paused
             (not (string= (buffer-name buffer) espas-buffer-name))
-            (null espas-update-list))
-    (let ((action (pop espas-update-list)))
-      (let ((newX (+ espas-player-x (car action)))
-            (newY (+ espas-player-y (cdr action))))
-        (unless (= (gamegrid-get-cell newX newY) espas-wall)
-          (gamegrid-set-cell espas-player-x espas-player-y espas-floor)
-          (gamegrid-set-cell newX           newY           espas-player)
+            (minibuffer-window-active-p (selected-window)))
+    (setq espas-player-bullets (seq-filter
+                                 (lambda (bullet)
+                                   (let ((newX (car bullet))
+                                         (newY (1- (cdr bullet))))
+                                     (unless (= (cdr bullet) espas-player-y)
+                                       (gamegrid-set-cell (car bullet)
+                                                          (cdr bullet) espas-floor))
 
-          (setq espas-player-x newX
-                espas-player-y newY))))
+                                     (setcar bullet newX)
+                                     (setcdr bullet newY)
 
+                                     (if (= (gamegrid-get-cell newX newY) espas-wall)
+                                         nil
+                                       (gamegrid-set-cell newX newY espas-fire)
+
+                                       t)))
+                                 espas-player-bullets))
+
+    (unless (null espas-player-updates)
+      (let ((action (pop espas-player-updates)))
+        (let ((newX (+ espas-player-x (car action)))
+              (newY (+ espas-player-y (cdr action))))
+          (unless (= (gamegrid-get-cell newX newY) espas-wall)
+            (gamegrid-set-cell espas-player-x espas-player-y espas-floor)
+            (gamegrid-set-cell newX           newY           espas-player)
+
+            (setq espas-player-x newX
+                  espas-player-y newY)))))
+
+    (when (> espas-fired 0)
+      (espas-update-whether-fired))
     (setq espas-moved nil)))
 
 (defun espas-start-game ()
