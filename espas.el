@@ -46,7 +46,7 @@
 
                                   map)
   "The in-game keymap.")
-(defvar   espas-update-list     ())
+(defvar   espas-player-updates  ())
 (defvar   espas-moved           nil)
 (defvar   espas-paused          nil)
 (defvar   espas-player-x        (/ espas-buffer-width  2))
@@ -78,7 +78,7 @@
   (interactive)
 
   (unless espas-moved
-    (push (cons -1 0) espas-update-list)
+    (push (cons -1 0) espas-player-updates)
 
     (setq espas-moved t)))
 (defun espas-move-down ()
@@ -86,7 +86,7 @@
   (interactive)
 
   (unless espas-moved
-    (push (cons 0 1) espas-update-list)
+    (push (cons 0 1) espas-player-updates)
 
     (setq espas-moved t)))
 (defun espas-move-right ()
@@ -94,7 +94,7 @@
   (interactive)
 
   (unless espas-moved
-    (push (cons 1 0) espas-update-list)
+    (push (cons 1 0) espas-player-updates)
 
     (setq espas-moved t)))
 (defun espas-move-up ()
@@ -102,10 +102,11 @@
   (interactive)
 
   (unless espas-moved
-    (push (cons 0 -1) espas-update-list)
+    (push (cons 0 -1) espas-player-updates)
 
     (setq espas-moved t)))
 
+;;; Game Setup Functions
 (defun espas-init-buffer ()
   "Initialize the Espas buffer."
 
