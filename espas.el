@@ -70,6 +70,7 @@
 
     vec))
 
+;;; Game Control Functions
 (defun espas-pause-game ()
   "Pause the game."
   (interactive)
