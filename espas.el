@@ -1,4 +1,10 @@
+(require 'cl)
 (require 'gamegrid)
+(require 'seq)
+
+(cl-defstruct (espas--enemy (:constructor espas-enemy--create)
+                            (:conc-name   espas-enemy--get-))
+  (entrance-path nil) (x nil) (y nil) (increment-count 0) (increment-funct '1+))
 
 (defconst espas-score-file-name "espas-scores")
 (defconst espas-buffer-name     "*Espas*")
@@ -22,6 +28,10 @@
 (defconst espas-fire-options    '(((glyph colorize) (t ?|))
                                   ((color-x color-x) (mono-x mono-x) (color-tty color-tty))
                                   (((glyph color-x) [1   0   0])   (color-tty "red"))))
+(defconst espas-enemy           5)
+(defconst espas-enemy-options   '(((glyph colorize) (t ?X))
+                                  ((color-x color-x) (mono-x mono-x) (color-tty color-tty))
+                                  (((glyph color-x) [0   1   0])   (color-tty "green"))))
 (defconst espas-tick            0.08
   "Time interval between each update.")
 (defvar   espas-score           0)
@@ -47,9 +57,20 @@
 
                                   map)
   "The in-game keymap.")
+(defvar   espas-enemies         (list
+                                  (espas-enemy--create :entrance-path '(( 3 .  1) ( 3 .  2) ( 3 .  3)
+                                                                        ( 4 .  4) ( 4 .  5) ( 4 .  6)
+                                                                        ( 5 .  7) ( 5 .  8) ( 5 .  9)
+                                                                        ( 6 . 10) ( 6 . 11) ( 7 . 12)
+                                                                        ( 7 . 13) ( 8 . 14) ( 9 . 15)
+                                                                        (10 . 15) (11 . 14) (12 . 13)
+                                                                        (12 . 12) (13 . 11) (14 . 10)
+                                                                        (14 .  9) (14 .  8) (13 .  7)
+                                                                        (12 .  6) (11 .  7) (10 .  8)))))
 (defvar   espas-player-updates  ())
 (defvar   espas-player-bullets  ())
 (defvar   espas-fired           0)
+(defvar   espas-enemy-move-p    nil)
 (defvar   espas-moved           nil)
 (defvar   espas-paused          nil)
 (defvar   espas-player-x        (/ espas-buffer-width  2))
@@ -66,6 +87,7 @@
                    ((= c espas-wall)   espas-wall-options)
                    ((= c espas-player) espas-player-options)
                    ((= c espas-fire)   espas-fire-options)
+                   ((= c espas-enemy)  espas-enemy-options)
                    (t                  '(nil nil nil)))))
 
     vec))
@@ -189,6 +211,49 @@ It should be `espas-buffer-name`."
 
                                        t)))
                                  espas-player-bullets))
+    (when espas-enemy-move-p
+      (setq espas-enemies (seq-filter
+                            (lambda (enemy)
+                              (if (espas-enemy--get-entrance-path enemy)
+                                  (let ((enemyPos (pop
+                                                    (espas-enemy--get-entrance-path
+                                                      enemy))))
+                                    (when (and
+                                            (espas-enemy--get-x enemy)
+                                            (espas-enemy--get-y enemy))
+                                      (gamegrid-set-cell
+                                        (espas-enemy--get-x enemy)
+                                        (espas-enemy--get-y enemy)
+                                        espas-floor))
+
+                                    (gamegrid-set-cell
+                                      (car enemyPos)
+                                      (cdr enemyPos)
+                                      espas-enemy)
+
+                                    (setf (espas-enemy--get-x enemy) (car enemyPos))
+                                    (setf (espas-enemy--get-y enemy) (cdr enemyPos)))
+                                (gamegrid-set-cell
+                                  (espas-enemy--get-x enemy)
+                                  (espas-enemy--get-y enemy)
+                                  espas-floor)
+
+                                (setf (espas-enemy--get-x enemy) (funcall
+                                                                   (espas-enemy--get-increment-funct enemy)
+                                                                   (espas-enemy--get-x               enemy)))
+                                (gamegrid-set-cell
+                                  (espas-enemy--get-x enemy)
+                                  (espas-enemy--get-y enemy)
+                                  espas-enemy)
+
+                                (setf (espas-enemy--get-increment-count enemy) (mod (1+ (espas-enemy--get-increment-count enemy)) 4))
+                                (when (= (espas-enemy--get-increment-count enemy) 0)
+                                  (setf (espas-enemy--get-increment-funct enemy) (if (eq (espas-enemy--get-increment-funct enemy) '1+)
+                                                                                     '1-
+                                                                                   '1+))))
+
+                              t)
+                            espas-enemies)))
 
     (unless (null espas-player-updates)
       (let ((action (pop espas-player-updates)))
@@ -203,6 +268,7 @@ It should be `espas-buffer-name`."
 
     (when (> espas-fired 0)
       (espas-update-whether-fired))
+    (setq espas-enemy-move-p (not espas-enemy-move-p))
     (setq espas-moved nil)))
 
 (defun espas-start-game ()
