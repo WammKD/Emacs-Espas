@@ -1,6 +1,7 @@
 (require 'cl)
 (require 'gamegrid)
 (require 'seq)
+(require 'subr-x)
 
 (cl-defstruct (espas--enemy (:constructor espas-enemy--create)
                             (:conc-name   espas-enemy--get-))
@@ -288,9 +289,9 @@ It should be `espas-buffer-name`."
       (setq espas-enemies (seq-filter
                             (lambda (enemy)
                               (if (espas-enemy--get-entrance-path enemy)
-                                  (let ((enemyPos (pop
-                                                    (espas-enemy--get-entrance-path
-                                                      enemy))))
+                                  (when-let ((enemyPos (pop
+                                                         (espas-enemy--get-entrance-path
+                                                           enemy))))
                                     (when (and
                                             (espas-enemy--get-x enemy)
                                             (espas-enemy--get-y enemy))
