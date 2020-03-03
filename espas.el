@@ -239,6 +239,8 @@
 
         (setq y (1+ y)))))
 
+  (espas-init-game-values)
+
   (gamegrid-set-cell espas-player-x espas-player-y espas-player))
 
 (defun espas-reset-game ()
