@@ -8,7 +8,7 @@
 
 (defconst espas-score-file-name "espas-scores")
 (defconst espas-buffer-name     "*Espas*")
-(defconst espas-buffer-width    17)
+(defconst espas-buffer-width    25)
 (defconst espas-buffer-height   25)
 (defconst espas-empty           0)
 (defconst espas-empty-options   '(((t 32)) nil nil))
