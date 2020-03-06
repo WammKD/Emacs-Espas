@@ -68,6 +68,21 @@
 (defvar   espas-player-x        nil)
 (defvar   espas-player-y        nil)
 
+(defun espas-generate-line-path (start end)
+  "Generate a series of coordinates when given the start and end coordinates."
+
+  (let ((path (lexical-let* ((p1X (* 1.0 (car start)))
+                             (p1Y (* 1.0 (cdr start)))
+                             (p2X (* 1.0 (car end)))
+                             (p2Y (* 1.0 (cdr end))))
+                (lambda (y)
+                  (+ (/ (- y p1Y) (/ (- p1Y p2Y) (- p1X p2X))) p1X))))
+        (lst  '()))
+    (mapcar
+      (lambda (y)
+        (cons (round (funcall path y)) y))
+      (reverse (number-sequence (cdr end) (1- (cdr start)))))))
+
 (defun espas-init-game-values ()
   "Return a list of starting enemies."
 
