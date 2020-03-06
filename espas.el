@@ -179,7 +179,7 @@
   "Have the player fire."
   (interactive)
 
-  (when (= espas-fired 0)
+  (when (zerop espas-fired)
     (push (cons espas-player-x espas-player-y) espas-player-bullets)
 
     (espas-update-whether-fired)))
