@@ -5,7 +5,7 @@
 
 (cl-defstruct (espas--enemy (:constructor espas-enemy--create)
                             (:conc-name   espas-enemy--get-))
-  (entrance-path nil) (x nil) (y nil) (increment-count 0) (increment-funct '1+))
+  (entrance-path nil) (to-position-path nil) (x nil) (y nil))
 
 (defconst espas-score-file-name "espas-scores")
 (defconst espas-buffer-name     "*Espas*")
@@ -63,6 +63,8 @@
 (defvar   espas-player-bullets  nil)
 (defvar   espas-fired           nil)
 (defvar   espas-enemy-move-p    nil)
+(defvar   espas-enemy-position  nil)
+(defvar   espas-enemy-increment nil)
 (defvar   espas-moved           nil)
 (defvar   espas-paused          nil)
 (defvar   espas-player-x        nil)
@@ -342,7 +344,13 @@ It should be `espas-buffer-name`."
                                                                                    '1+))))
 
                               t)
-                            espas-enemies)))
+                            espas-enemies))
+
+      (when (natnump espas-enemy-position)
+        (setq espas-enemy-position (mod (1+ espas-enemy-position) 4))
+
+        (when (zerop espas-enemy-position)
+          (setq espas-enemy-increment (if (eq espas-enemy-increment '1+) '1- '1+)))))
 
     (unless (null espas-player-updates)
       (let ((action (pop espas-player-updates)))
