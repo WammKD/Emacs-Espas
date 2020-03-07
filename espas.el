@@ -102,82 +102,70 @@
 (defun espas-init-game-values ()
   "Return a list of starting enemies."
 
-  (setq espas-enemies        (list
-                               ;; First Row
-                               (espas-enemy--create :entrance-path '(( 3 .  1) ( 3 .  2) ( 4 .  3)
-                                                                     ( 4 .  4) ( 5 .  5) ( 6 .  6)
-                                                                     ( 6 .  7) ( 6 .  8) ( 7 .  9)
-                                                                     ( 7 . 10) ( 7 . 11) ( 8 . 12)
-                                                                     ( 9 . 12) (10 . 13) (11 . 13)
-                                                                     (12 . 13) (13 . 13) (14 . 12)
-                                                                     (15 . 12) (16 . 11) (16 . 10)
-                                                                     (17 . 10) (17 .  9) (18 .  8)
-                                                                     (18 .  7) (19 .  6) (19 .  5)
-                                                                     (18 .  6) (17 .  6) (17 .  7)
-                                                                     (16 .  8)))
-                               (espas-enemy--create :entrance-path `(,nil      ,nil      ( 1 .  1)
-                                                                     ( 1 .  2) ( 2 .  3) ( 2 .  4)
-                                                                     ( 3 .  5) ( 4 .  6) ( 4 .  7)
-                                                                     ( 4 .  8) ( 5 .  9) ( 5 . 10)
-                                                                     ( 5 . 11) ( 6 . 12) ( 7 . 12)
-                                                                     ( 8 . 13) ( 9 . 13) (10 . 13)
-                                                                     (11 . 13) (12 . 12) (13 . 12)
-                                                                     (14 . 11) (15 . 11) (16 . 10)
-                                                                     (16 .  9) (17 .  9) (17 .  8)
-                                                                     (16 .  7) (15 .  6) (14 .  7)
-                                                                     (13 .  8)))
-                               (espas-enemy--create :entrance-path `(,nil      ,nil      ,nil
-                                                                     ,nil      ( 3 .  1) ( 3 .  2)
-                                                                     ( 3 .  3) ( 4 .  4) ( 4 .  5)
-                                                                     ( 4 .  6) ( 5 .  7) ( 5 .  8)
-                                                                     ( 5 .  9) ( 6 . 10) ( 6 . 11)
-                                                                     ( 7 . 12) ( 7 . 13) ( 8 . 14)
-                                                                     ( 9 . 15) (10 . 15) (11 . 14)
-                                                                     (12 . 13) (12 . 12) (13 . 11)
-                                                                     (14 . 10) (14 .  9) (14 .  8)
-                                                                     (13 .  7) (12 .  6) (11 .  7)
-                                                                     (10 .  8)))
-                               (espas-enemy--create :entrance-path `(,nil      ,nil      ,nil
-                                                                     ,nil      ,nil      ,nil
-                                                                     ( 1 .  1) ( 1 .  2) ( 1 .  3)
-                                                                     ( 2 .  4) ( 2 .  5) ( 2 .  6)
-                                                                     ( 3 .  7) ( 3 .  8) ( 3 .  9)
-                                                                     ( 4 . 10) ( 4 . 11) ( 5 . 12)
-                                                                     ( 5 . 13) ( 6 . 14) ( 7 . 15)
-                                                                     ( 8 . 15) ( 9 . 14) (10 . 13)
-                                                                     (10 . 12) (10 . 11) (10 . 10)
-                                                                     (10 .  9) ( 9 .  8) ( 8 .  7)
-                                                                     ( 7 .  8)))
-                               (espas-enemy--create :entrance-path `(,nil      ,nil      ,nil
-                                                                     ,nil      ,nil      ,nil
-                                                                     ,nil      ,nil      ( 3 .  1)
-                                                                     ( 4 .  2) ( 5 .  3) ( 5 .  4)
-                                                                     ( 6 .  5) ( 6 .  6) ( 7 .  7)
-                                                                     ( 8 .  8) ( 8 .  9) ( 9 . 10)
-                                                                     ( 9 . 11) (10 . 12) (10 . 11)
-                                                                     (11 . 10) (11 .  9) (11 .  8)
-                                                                     (10 .  7) ( 9 .  6) ( 8 .  6)
-                                                                     ( 7 .  7) ( 6 .  7) ( 5 .  8)
-                                                                     ( 4 .  8)))
-                               (espas-enemy--create :entrance-path `(,nil      ,nil      ,nil
-                                                                     ,nil      ,nil      ,nil
-                                                                     ,nil      ,nil      ,nil
-                                                                     ,nil      ( 2 .  1) ( 2 .  2)
-                                                                     ( 2 .  3) ( 3 .  4) ( 3 .  5)
-                                                                     ( 3 .  6) ( 4 .  7) ( 4 .  8)
-                                                                     ( 5 .  9) ( 5 . 10) ( 6 . 11)
-                                                                     ( 6 . 12) ( 7 . 12) ( 8 . 11)
-                                                                     ( 7 . 10) ( 6 .  9) ( 5 .  8)
-                                                                     ( 4 .  8) ( 3 .  7) ( 2 .  7)
-                                                                     ( 1 .  8)))))
-  (setq espas-player-updates ())
-  (setq espas-player-bullets ())
-  (setq espas-fired          0)
-  (setq espas-enemy-move-p   nil)
-  (setq espas-moved          nil)
-  (setq espas-paused         nil)
-  (setq espas-player-x       (/ espas-buffer-width  2))
-  (setq espas-player-y       (- espas-buffer-height 3)))
+  (setq espas-enemies         (list
+                                ;; First Row, left
+                                (espas-enemy--create :entrance-path    intro1
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(12 . 19)
+                                                                         '( 1 .  8)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         `(,nil ,nil)
+                                                                         intro1)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(12 . 19)
+                                                                         '( 6 .  8)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         `(,nil ,nil
+                                                                           ,nil ,nil)
+                                                                         intro1)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(12 . 19)
+                                                                         '(11 .  8)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         `(,nil ,nil
+                                                                           ,nil ,nil
+                                                                           ,nil ,nil)
+                                                                         intro1)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(12 . 19)
+                                                                         '(12 .  8)))
+                                ;; First Row, right
+                                (espas-enemy--create :entrance-path    intro2
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(16 . 19)
+                                                                         '(22 .  8)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         `(,nil ,nil)
+                                                                         intro2)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(16 . 19)
+                                                                         '(21 .  8)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         `(,nil ,nil
+                                                                           ,nil ,nil)
+                                                                         intro2)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(16 . 19)
+                                                                         '(20 .  8)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         `(,nil ,nil
+                                                                           ,nil ,nil
+                                                                           ,nil ,nil)
+                                                                         intro2)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(16 . 19)
+                                                                         '(15 .  8)))
+                                ))
+  (setq espas-player-updates  ())
+  (setq espas-player-bullets  ())
+  (setq espas-fired           0)
+  (setq espas-enemy-move-p    nil)
+  (setq espas-enemy-position  -1)
+  (setq espas-enemy-increment '1+)
+  (setq espas-moved           nil)
+  (setq espas-paused          nil)
+  (setq espas-player-x        (/ espas-buffer-width  2))
+  (setq espas-player-y        (- espas-buffer-height 3)))
 
 (defun espas-display-options ()
   "Return a vector with display informations."
