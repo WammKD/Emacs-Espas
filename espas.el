@@ -324,56 +324,40 @@ It should be `espas-buffer-name`."
     (when espas-enemy-move-p
       (setq espas-enemies (seq-filter
                             (lambda (enemy)
-                              (cond
-                               ((espas-enemy--get-entrance-path enemy)
-                                     (when-let ((enemyPos (pop
-                                                            (espas-enemy--get-entrance-path
-                                                              enemy))))
-                                       (when (and
-                                               (espas-enemy--get-x enemy)
-                                               (espas-enemy--get-y enemy))
-                                         (gamegrid-set-cell
-                                           (espas-enemy--get-x enemy)
-                                           (espas-enemy--get-y enemy)
-                                           espas-floor))
+                              (when-let ((newCord (cond
+                                                   ((espas-enemy--get-entrance-path
+                                                      enemy)
+                                                         (pop
+                                                           (espas-enemy--get-entrance-path
+                                                             enemy)))
+                                                   ((espas-enemy--get-to-position-path
+                                                      enemy)
+                                                         (pop
+                                                           (espas-enemy--get-to-position-path
+                                                             enemy)))
+                                                   (t    (when (> 0 espas-enemy-position)
+                                                           (setq espas-enemy-position 0))
 
-                                       (gamegrid-set-cell
-                                         (car enemyPos)
-                                         (cdr enemyPos)
-                                         espas-enemy)
+                                                         (cons
+                                                           (funcall
+                                                             espas-enemy-increment
+                                                             (espas-enemy--get-x enemy))
+                                                           (espas-enemy--get-y enemy))))))
+                                (when (and
+                                        (espas-enemy--get-x enemy)
+                                        (espas-enemy--get-y enemy))
+                                  (gamegrid-set-cell
+                                    (espas-enemy--get-x enemy)
+                                    (espas-enemy--get-y enemy)
+                                    espas-floor))
 
-                                       (setf (espas-enemy--get-x enemy) (car enemyPos))
-                                       (setf (espas-enemy--get-y enemy) (cdr enemyPos))))
-                               ((espas-enemy--get-to-position-path enemy)
-                                     (let ((enemyPos (pop
-                                                       (espas-enemy--get-to-position-path
-                                                         enemy))))
-                                       (gamegrid-set-cell
-                                         (espas-enemy--get-x enemy)
-                                         (espas-enemy--get-y enemy)
-                                         espas-floor)
+                                (gamegrid-set-cell
+                                  (car newCord)
+                                  (cdr newCord)
+                                  espas-enemy)
 
-                                       (gamegrid-set-cell
-                                         (car enemyPos)
-                                         (cdr enemyPos)
-                                         espas-enemy)
-
-                                       (setf (espas-enemy--get-x enemy) (car enemyPos))
-                                       (setf (espas-enemy--get-y enemy) (cdr enemyPos))))
-                               (t    (gamegrid-set-cell
-                                       (espas-enemy--get-x enemy)
-                                       (espas-enemy--get-y enemy)
-                                       espas-floor)
-
-                                     (when (> 0 espas-enemy-position)
-                                       (setq espas-enemy-position 0))
-                                     (setf (espas-enemy--get-x enemy) (funcall
-                                                                        espas-enemy-increment
-                                                                        (espas-enemy--get-x enemy)))
-                                     (gamegrid-set-cell
-                                       (espas-enemy--get-x enemy)
-                                       (espas-enemy--get-y enemy)
-                                       espas-enemy)))
+                                (setf (espas-enemy--get-x enemy) (car newCord))
+                                (setf (espas-enemy--get-y enemy) (cdr newCord)))
 
                               t)
                             espas-enemies))
