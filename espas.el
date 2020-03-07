@@ -302,7 +302,24 @@ It should be `espas-buffer-name`."
                                          nil
                                        (gamegrid-set-cell newX newY espas-fire)
 
-                                       t)))
+                                       (let ((result t))
+                                         (setq espas-enemies (seq-filter
+                                                               (lambda (enemy)
+                                                                 (if-let ((enemyX (espas-enemy--get-x enemy))
+                                                                          (enemyY (espas-enemy--get-y enemy)))
+                                                                     (if (not (and
+                                                                                (= enemyX newX)
+                                                                                (= enemyY newY)))
+                                                                         t
+                                                                       (gamegrid-set-cell newX newY espas-floor)
+
+                                                                       (setq result nil)
+
+                                                                       nil)
+                                                                   t))
+                                                               espas-enemies))
+
+                                         result))))
                                  espas-player-bullets))
     (when espas-enemy-move-p
       (setq espas-enemies (seq-filter
