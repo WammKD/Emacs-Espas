@@ -322,45 +322,32 @@ It should be `espas-buffer-name`."
                                          result))))
                                  espas-player-bullets))
     (when espas-enemy-move-p
-      (setq espas-enemies (seq-filter
-                            (lambda (enemy)
-                              (when-let ((newCord (cond
-                                                   ((espas-enemy--get-entrance-path
-                                                      enemy)
-                                                         (pop
-                                                           (espas-enemy--get-entrance-path
-                                                             enemy)))
-                                                   ((espas-enemy--get-to-position-path
-                                                      enemy)
-                                                         (pop
-                                                           (espas-enemy--get-to-position-path
-                                                             enemy)))
-                                                   (t    (when (> 0 espas-enemy-position)
-                                                           (setq espas-enemy-position 0))
+      (dolist (enemy espas-enemies)
+        (when-let ((newCord (cond
+                              ((espas-enemy--get-entrance-path    enemy)
+                                    (pop
+                                      (espas-enemy--get-entrance-path     enemy)))
+                              ((espas-enemy--get-to-position-path enemy)
+                                    (pop
+                                      (espas-enemy--get-to-position-path enemy)))
+                              (t    (when (> 0 espas-enemy-position)
+                                      (setq espas-enemy-position 0))
 
-                                                         (cons
-                                                           (funcall
-                                                             espas-enemy-increment
-                                                             (espas-enemy--get-x enemy))
-                                                           (espas-enemy--get-y enemy))))))
-                                (when (and
-                                        (espas-enemy--get-x enemy)
-                                        (espas-enemy--get-y enemy))
-                                  (gamegrid-set-cell
-                                    (espas-enemy--get-x enemy)
-                                    (espas-enemy--get-y enemy)
-                                    espas-floor))
+                                    (cons
+                                      (funcall
+                                        espas-enemy-increment
+                                        (espas-enemy--get-x enemy))
+                                      (espas-enemy--get-y enemy))))))
+          (when (and (espas-enemy--get-x enemy) (espas-enemy--get-y enemy))
+            (gamegrid-set-cell
+              (espas-enemy--get-x enemy)
+              (espas-enemy--get-y enemy)
+              espas-floor))
 
-                                (gamegrid-set-cell
-                                  (car newCord)
-                                  (cdr newCord)
-                                  espas-enemy)
+          (gamegrid-set-cell (car newCord) (cdr newCord) espas-enemy)
 
-                                (setf (espas-enemy--get-x enemy) (car newCord))
-                                (setf (espas-enemy--get-y enemy) (cdr newCord)))
-
-                              t)
-                            espas-enemies))
+          (setf (espas-enemy--get-x enemy) (car newCord))
+          (setf (espas-enemy--get-y enemy) (cdr newCord))))
 
       (when (natnump espas-enemy-position)
         (setq espas-enemy-position (mod (1+ espas-enemy-position) 4))
