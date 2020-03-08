@@ -109,22 +109,19 @@
                                                                          '(12 . 19)
                                                                          '( 1 .  8)))
                                 (espas-enemy--create :entrance-path    (append
-                                                                         `(,nil ,nil)
+                                                                         (make-list 2 nil)
                                                                          intro1)
                                                      :to-position-path (espas-generate-line-path
                                                                          '(12 . 19)
                                                                          '( 6 .  8)))
                                 (espas-enemy--create :entrance-path    (append
-                                                                         `(,nil ,nil
-                                                                           ,nil ,nil)
+                                                                         (make-list 4 nil)
                                                                          intro1)
                                                      :to-position-path (espas-generate-line-path
                                                                          '(12 . 19)
                                                                          '(11 .  8)))
                                 (espas-enemy--create :entrance-path    (append
-                                                                         `(,nil ,nil
-                                                                           ,nil ,nil
-                                                                           ,nil ,nil)
+                                                                         (make-list 6 nil)
                                                                          intro1)
                                                      :to-position-path (espas-generate-line-path
                                                                          '(12 . 19)
@@ -135,22 +132,19 @@
                                                                          '(16 . 19)
                                                                          '(22 .  8)))
                                 (espas-enemy--create :entrance-path    (append
-                                                                         `(,nil ,nil)
+                                                                         (make-list 2 nil)
                                                                          intro2)
                                                      :to-position-path (espas-generate-line-path
                                                                          '(16 . 19)
                                                                          '(21 .  8)))
                                 (espas-enemy--create :entrance-path    (append
-                                                                         `(,nil ,nil
-                                                                           ,nil ,nil)
+                                                                         (make-list 4 nil)
                                                                          intro2)
                                                      :to-position-path (espas-generate-line-path
                                                                          '(16 . 19)
                                                                          '(20 .  8)))
                                 (espas-enemy--create :entrance-path    (append
-                                                                         `(,nil ,nil
-                                                                           ,nil ,nil
-                                                                           ,nil ,nil)
+                                                                         (make-list 6 nil)
                                                                          intro2)
                                                      :to-position-path (espas-generate-line-path
                                                                          '(16 . 19)
