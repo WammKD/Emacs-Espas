@@ -42,25 +42,12 @@
                                   ( 4 . 17) ( 5 . 18) ( 6 . 19) ( 7 . 20)
                                   ( 8 . 21) ( 9 . 21) (10 . 20) (11 . 20)
                                   (12 . 19)))
-(defconst intro2                '((12 .  1) (12 .  2) (13 .  3) (14 .  4)
-                                  (15 .  5) (16 .  6) (17 .  7) (18 .  8)
-                                  (19 .  9) (20 . 10) (21 . 11) (22 . 12)
-                                  (22 . 13) (23 . 14) (23 . 15) (24 . 16)
-                                  (24 . 17) (23 . 18) (22 . 19) (21 . 20)
-                                  (20 . 21) (19 . 21) (18 . 20) (17 . 20)
-                                  (16 . 19)))
 (defconst intro3                '(( 1 . 20) ( 2 . 20) ( 3 . 19) ( 4 . 19)
                                   ( 5 . 19) ( 6 . 18) ( 7 . 18) ( 8 . 17)
                                   ( 9 . 16) ( 9 . 15) ( 8 . 13) ( 7 . 12)
                                   ( 6 . 11) ( 5 . 10) ( 4 . 11) ( 3 . 12)
                                   ( 3 . 13) ( 4 . 14) ( 5 . 15) ( 6 . 14)
                                   ( 7 . 13) ( 8 . 12) ( 9 . 11) (10 . 10)))
-(defconst intro4                '((27 . 20) (26 . 20) (25 . 19) (24 . 19)
-                                  (23 . 19) (22 . 18) (21 . 18) (20 . 17)
-                                  (19 . 16) (19 . 15) (20 . 13) (21 . 12)
-                                  (22 . 11) (23 . 10) (24 . 11) (25 . 12)
-                                  (25 . 13) (24 . 14) (23 . 15) (22 . 14)
-                                  (21 . 13) (20 . 12) (19 . 11) (18 . 10)))
 (defvar   espas-score           0)
 (defvar   espas-null-map        (let ((map (make-sparse-keymap)))
                                   (define-key map (kbd "q") #'bury-buffer)
@@ -95,6 +82,12 @@
 (defvar   espas-paused          nil)
 (defvar   espas-player-x        nil)
 (defvar   espas-player-y        nil)
+
+(defun espas-invert-x-of-path (path)
+  "Convert path that leads in from the right to one that leads in from the left."
+
+  (mapcar (lambda (coord)
+            (cons (- (1- espas-buffer-width) (car coord)) (cdr coord))) path))
 
 (defun espas-generate-line-path (start end)
   "Generate a series of coordinates when given the start and end coordinates."
@@ -139,25 +132,29 @@
                                                                          '(12 . 19)
                                                                          '(12 .  8)))
                                 ;; First Row, right
-                                (espas-enemy--create :entrance-path    intro2
+                                (espas-enemy--create :entrance-path    (espas-invert-x-of-path
+                                                                         intro1)
                                                      :to-position-path (espas-generate-line-path
                                                                          '(16 . 19)
                                                                          '(22 .  8)))
                                 (espas-enemy--create :entrance-path    (append
                                                                          (make-list 2 nil)
-                                                                         intro2)
+                                                                         (espas-invert-x-of-path
+                                                                           intro1))
                                                      :to-position-path (espas-generate-line-path
                                                                          '(16 . 19)
                                                                          '(21 .  8)))
                                 (espas-enemy--create :entrance-path    (append
                                                                          (make-list 4 nil)
-                                                                         intro2)
+                                                                         (espas-invert-x-of-path
+                                                                           intro1))
                                                      :to-position-path (espas-generate-line-path
                                                                          '(16 . 19)
                                                                          '(20 .  8)))
                                 (espas-enemy--create :entrance-path    (append
                                                                          (make-list 6 nil)
-                                                                         intro2)
+                                                                         (espas-invert-x-of-path
+                                                                           intro1))
                                                      :to-position-path (espas-generate-line-path
                                                                          '(16 . 19)
                                                                          '(15 .  8)))
@@ -189,25 +186,29 @@
                                 ;; Second Row, right
                                 (espas-enemy--create :entrance-path    (append
                                                                          (make-list 42 nil)
-                                                                         intro4)
+                                                                         (espas-invert-x-of-path
+                                                                           intro3))
                                                      :to-position-path (espas-generate-line-path
                                                                          '(18 . 10)
                                                                          '(24 .  6)))
                                 (espas-enemy--create :entrance-path    (append
                                                                          (make-list 44 nil)
-                                                                         intro4)
+                                                                         (espas-invert-x-of-path
+                                                                           intro3))
                                                      :to-position-path (espas-generate-line-path
                                                                          '(18 . 10)
                                                                          '(23 .  6)))
                                 (espas-enemy--create :entrance-path    (append
                                                                          (make-list 46 nil)
-                                                                         intro4)
+                                                                         (espas-invert-x-of-path
+                                                                           intro3))
                                                      :to-position-path (espas-generate-line-path
                                                                          '(18 . 10)
                                                                          '(18 .  6)))
                                 (espas-enemy--create :entrance-path    (append
                                                                          (make-list 48 nil)
-                                                                         intro4)
+                                                                         (espas-invert-x-of-path
+                                                                           intro3))
                                                      :to-position-path (espas-generate-line-path
                                                                          '(18 . 10)
                                                                          '(13 .  6)))
