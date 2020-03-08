@@ -33,6 +33,10 @@
 (defconst espas-enemy-options   '(((glyph colorize) (t ?X))
                                   ((color-x color-x) (mono-x mono-x) (color-tty color-tty))
                                   (((glyph color-x) [0   1   0])   (color-tty "green"))))
+(defconst espas-shot            6)
+(defconst espas-shot-options    '(((glyph colorize) (t ?*))
+                                  ((color-x color-x) (mono-x mono-x) (color-tty color-tty))
+                                  (((glyph color-x) [1   1   0])   (color-tty "yellow"))))
 (defconst espas-tick            0.08
   "Time interval between each update.")
 (defconst intro1                '((16 .  1) (16 .  2) (15 .  3) (14 .  4)
@@ -71,6 +75,7 @@
 
                                   map)
   "The in-game keymap.")
+(defvar   espas-enemies-shot    nil)
 (defvar   espas-enemies         nil)
 (defvar   espas-player-updates  nil)
 (defvar   espas-player-bullets  nil)
@@ -107,6 +112,7 @@
 (defun espas-init-game-values ()
   "Return a list of starting enemies."
 
+  (setq espas-enemies-shot    '())
   (setq espas-enemies         (list
                                 ;; First Row, left
                                 (espas-enemy--create :entrance-path    intro1
@@ -318,6 +324,7 @@
                    ((= c espas-player) espas-player-options)
                    ((= c espas-fire)   espas-fire-options)
                    ((= c espas-enemy)  espas-enemy-options)
+                   ((= c espas-shot)   espas-shot-options)
                    (t                  '(nil nil nil)))))
 
     vec))
@@ -426,6 +433,11 @@ It should be `espas-buffer-name`."
             espas-paused
             (not (string= (buffer-name buffer) espas-buffer-name))
             (minibuffer-window-active-p (selected-window)))
+    (when espas-enemy-move-p
+      (dolist (shot espas-enemies-shot)
+        (gamegrid-set-cell (car shot) (cdr shot) espas-floor))
+      (setq espas-enemies-shot '()))
+
     (setq espas-player-bullets (seq-filter
                                  (lambda (bullet)
                                    (let ((newX (car bullet))
@@ -450,7 +462,10 @@ It should be `espas-buffer-name`."
                                                                                 (= enemyX newX)
                                                                                 (= enemyY newY)))
                                                                          t
-                                                                       (gamegrid-set-cell newX newY espas-floor)
+                                                                       (gamegrid-set-cell newX newY espas-shot)
+                                                                       (push
+                                                                         (cons newX newY)
+                                                                         espas-enemies-shot)
 
                                                                        (setq result nil)
 
