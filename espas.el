@@ -49,6 +49,18 @@
                                   (24 . 17) (23 . 18) (22 . 19) (21 . 20)
                                   (20 . 21) (19 . 21) (18 . 20) (17 . 20)
                                   (16 . 19)))
+(defconst intro3                '(( 1 . 20) ( 2 . 20) ( 3 . 19) ( 4 . 19)
+                                  ( 5 . 19) ( 6 . 18) ( 7 . 18) ( 8 . 17)
+                                  ( 9 . 16) ( 9 . 15) ( 8 . 13) ( 7 . 12)
+                                  ( 6 . 11) ( 5 . 10) ( 4 . 11) ( 3 . 12)
+                                  ( 3 . 13) ( 4 . 14) ( 5 . 15) ( 6 . 14)
+                                  ( 7 . 13) ( 8 . 12) ( 9 . 11) (10 . 10)))
+(defconst intro4                '((27 . 20) (26 . 20) (25 . 19) (24 . 19)
+                                  (23 . 19) (22 . 18) (21 . 18) (20 . 17)
+                                  (19 . 16) (19 . 15) (20 . 13) (21 . 12)
+                                  (22 . 11) (23 . 10) (24 . 11) (25 . 12)
+                                  (25 . 13) (24 . 14) (23 . 15) (22 . 14)
+                                  (21 . 13) (20 . 12) (19 . 11) (18 . 10)))
 (defvar   espas-score           0)
 (defvar   espas-null-map        (let ((map (make-sparse-keymap)))
                                   (define-key map (kbd "q") #'bury-buffer)
@@ -149,6 +161,56 @@
                                                      :to-position-path (espas-generate-line-path
                                                                          '(16 . 19)
                                                                          '(15 .  8)))
+                                ;; Second Row, left
+                                (espas-enemy--create :entrance-path    (append
+                                                                         (make-list 42 nil)
+                                                                         intro3)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(10 . 10)
+                                                                         '( 3 .  6)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         (make-list 44 nil)
+                                                                         intro3)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(10 . 10)
+                                                                         '( 8 .  6)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         (make-list 46 nil)
+                                                                         intro3)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(10 . 10)
+                                                                         '( 9 .  6)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         (make-list 48 nil)
+                                                                         intro3)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(10 . 10)
+                                                                         '(10 .  6)))
+                                ;; Second Row, right
+                                (espas-enemy--create :entrance-path    (append
+                                                                         (make-list 42 nil)
+                                                                         intro4)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(18 . 10)
+                                                                         '(24 .  6)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         (make-list 44 nil)
+                                                                         intro4)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(18 . 10)
+                                                                         '(23 .  6)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         (make-list 46 nil)
+                                                                         intro4)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(18 . 10)
+                                                                         '(18 .  6)))
+                                (espas-enemy--create :entrance-path    (append
+                                                                         (make-list 48 nil)
+                                                                         intro4)
+                                                     :to-position-path (espas-generate-line-path
+                                                                         '(18 . 10)
+                                                                         '(13 .  6)))
                                 ))
   (setq espas-player-updates  ())
   (setq espas-player-bullets  ())
