@@ -24,7 +24,7 @@
 (defconst espas-player          3)
 (defconst espas-player-options  '(((glyph colorize) (t ?P))
                                   ((color-x color-x) (mono-x mono-x) (color-tty color-tty))
-                                  (((glyph color-x) [0.9 0.3 0.7]) (color-tty "yellow"))))
+                                  (((glyph color-x) [0.9 0.3 0.7]) (color-tty "purple"))))
 (defconst espas-fire            4)
 (defconst espas-fire-options    '(((glyph colorize) (t ?|))
                                   ((color-x color-x) (mono-x mono-x) (color-tty color-tty))
